@@ -1,0 +1,30 @@
+import requests
+
+#Configuración de conexión
+ip_servidor = "localhost:3344" # Cambiar por la IP real si es remoto
+printer_slug = "1" # El slug interno de tu impresora
+api_key = "70c3166f-b6f5-456c-acd2-a3cba8380cfa"
+
+#Construir la URL con los parámetros requeridos
+#Nota: %23 es el símbolo '#' codificado para URL (grupo por defecto)
+url_upload = f"http://{ip_servidor}/printer/model/%7Bprinter_slug%7D?a=upload&name=pieza.gcode&group=%23&overwrite=true"
+
+#Encabezado de autenticación recomendada
+headers = {
+    "x-api-key": api_key
+}
+
+#Archivo G-code a enviar (Debe llamarse 'filename' según la API)
+archivos = {
+    'filename': ('pieza.gcode', open("C:\\Users\\Lenovo\\Downloads\\toolpath.gcode", 'rb'))
+}
+
+#Ejecutar la subida (POST multipart/form-data automático con 'files')
+respuesta = requests.post(url_upload, headers=headers, files=archivos)
+print("Respuesta de subida:", respuesta.text)
+
+#--- (Opcional) Si quisieras iniciar la impresión automáticamente ---
+#Asumiendo que la respuesta te devuelve el 'id' del modelo subido
+#id_modelo = respuesta.json()['id']
+#url_imprimir = f"http://{ip_servidor}/printer/api/%7Bprinter_slug%7D?a=copyModel&id={id_modelo}&autostart=true"
+#requests.get(url_imprimir, headers=headers)
