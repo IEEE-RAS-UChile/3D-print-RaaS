@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IEEE RAS UChile 3D Print Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="{{ url_for('index') }}">
+          <img class="brand-logo" src="{{ url_for('static', filename='img/logoRAS.jpeg') }}" alt="IEEE RAS logo">
+          <span>IEEE RAS UChile 3D Print Portal</span>
+        </a>
+        <nav class="main-nav">
+          {% if session.get('user_id') %}
+            <a href="{{ url_for('index') }}">Inicio</a>
+            <a href="{{ url_for('upload') }}">Subir</a>
+            <span class="credits" style="background-color: #002855; color: white; padding: 4px 10px; border-radius: 12px; font-weight: bold;">
+              Créditos: {{ session.get('username') }}
+            </span>
+            <a href="{{ url_for('logout') }}" style="color: #dc3545; font-weight: bold;">Cerrar Sesión</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Iniciar Sesión</a>
+            <a href="{{ url_for('register') }}">Registrarse</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="container" style="margin-top: 20px;">
+          {% for message in messages %}
+            <div style="background-color: #f8d7da; color: #721c24; padding: 12px 20px; border-radius: 4px; border: 1px solid #f5c6cb; margin-bottom: 10px;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="site-main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-info">
+          <p class="footer-tag">IEEE RAS UChile 3D Print Portal</p>
+          <div class="footer-about">
+            <div>
+              <h3>Quiénes somos</h3>
+              <p>Proyecto de impresión 3D creado por el capítulo Robotics and Automation Society (RAS) de la rama estudiantil IEEE de la Universidad de Chile. Apoyado por la Universidad Andrés Bello, la Universidad de Chile y el Institute of Electrical and Electronics Engineers (IEEE) Uchile. Este portal ofrece acceso al ecosistema de fabricación aditiva con énfasis en diseño colaborativo, investigación y uso de brazos robóticos.</p>
+            </div>
+            <div class="partner-text">
+              <span>Universidad Andrés Bello</span>
+              <span>Universidad de Chile</span>
+              <span>IEEE RAS Uchile</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-logos">
+          <img src="{{ url_for('static', filename='img/logouchile.png') }}" alt="UChile logo">
+          <img src="{{ url_for('static', filename='img/logo.png') }}" alt="UNAB logo">
+          <img src="{{ url_for('static', filename='img/logoieee.jpg') }}" alt="IEEE logo">
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

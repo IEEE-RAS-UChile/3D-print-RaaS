@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-section upload-page">
+  <div class="container upload-panel">
+    <div class="panel-header">
+      <h1>Sube tu archivo de impresión 3D</h1>
+      <p>Formatos aceptados: <strong>.gcode</strong>, <strong>.gco</strong> o <strong>.stl</strong>.</p>
+    </div>
+
+    <form class="upload-form" method="post" enctype="multipart/form-data" action="{{ url_for('upload') }}">
+      <label class="file-input-label" for="print_file">Elige un archivo</label>
+      <input id="print_file" name="print_file" type="file" accept=".gcode,.gco,.stl" required style="margin-bottom: 15px;">
+      <button class="btn btn-primary" type="submit">Subir archivo</button>
+    </form>
+
+    <div class="uploaded-files">
+      <h2>Mis Archivos Subidos</h2>
+      <table class="files-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid #dee2e6;">
+            <th style="padding: 8px;">Nombre</th>
+            <th style="padding: 8px;">Fecha de Carga</th>
+            <th style="padding: 8px; text-align: center;">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for archivo in archivos %}
+          <tr style="border-bottom: 1px solid #dee2e6;">
+            <td style="padding: 8px; font-weight: 500;">{{ archivo.filename }}</td>
+            <td style="padding: 8px; color: #6c757d;">{{ archivo.uploaded_at.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td style="padding: 8px; text-align: center;">
+              <form action="{{ url_for('delete_file', file_id=archivo.id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo?');" style="display:inline;">
+                <button type="submit" class="btn" style="background-color: #dc3545; color: white; padding: 4px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3" style="padding: 15px; text-align: center; color: #6c757d;">
+              Aún no has subido ningún archivo.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="admin-actions">
+      <h2>Acciones Administrativas</h2>
+      <button class="btn btn-secondary" title="Conectar con el software Repetier para controlar la impresora">Conectar con Repetier</button>
+      <button class="btn btn-secondary" title="Agregar créditos al saldo del estudiante">Agregar Créditos</button>
+      <button class="btn btn-secondary" title="Registrar el material y volumen utilizado en la impresión">Registrar Uso de Material</button>
+    </div>
+
+    <div class="notes">
+      <h2>Antes de imprimir</h2>
+      <ul>
+        <li>Se aceptan archivos `.gcode`, `.gco` o `.stl`.</li>
+        <li>Cada solicitud descontará créditos de tu saldo estudiantil (Disponible: {{ user.credits }} cm³).</li>
+        <li>Tu subida se guarda de forma segura para revisión y programación del brazo robótico.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}

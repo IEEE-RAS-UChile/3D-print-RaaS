@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">IEEE RAS Additive Lab</p>
+      <h1>Imprime tu modelo 3D con nuestro portal de fabricación aditiva</h1>
+      <p>Envía tu archivo `.gcode`, rastrea tu solicitud de impresión y gestiona tu acceso al sistema. Este portal enfoca la impresión 3D en colaboración académica, robótica y diseño experimental.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="{{ url_for('upload') }}">Subir un archivo</a>
+        <a class="btn btn-secondary" href="#how-it-works">Cómo funciona</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-blocks-grid">
+        <div class="image-block">
+          <img src="{{ url_for('static', filename='img/bloques.jpeg') }}" alt="Impresora 3D">
+        </div>
+        <div class="image-block">
+          <img src="{{ url_for('static', filename='img/robot.jpeg') }}" alt="Brazo robótico">
+        </div>
+        <div class="image-block">
+          <img src="{{ url_for('static', filename='img/printer.jpg') }}" alt="Impresora 3D">
+        </div>
+        <div class="image-block">
+          <img src="{{ url_for('static', filename='img/pasos.jpeg') }}" alt="Pasos de trabajo">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blocks">
+  <div class="container blocks-card">
+    <div class="blocks-image">
+      <img src="{{ url_for('static', filename='img/step.jpg') }}" alt="Bloques del portal">
+    </div>
+    <div class="blocks-copy">
+      <p class="eyebrow">Sobre el portal</p>
+      <h2>Trabajamos con un brazo robótico para impresión 3D</h2>
+      <p>El portal integra módulos de carga, revisión, programación del brazo robótico y entrega. Cada bloque representa una etapa clave en el flujo de trabajo de impresión 3D.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="features">
+  <div class="container">
+    <h2>Cómo funciona</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <img src="{{ url_for('static', filename='img/step.jpg') }}" alt="Paso 1" class="card-image">
+        <h3>1. Selecciona tu archivo</h3>
+        <p>Sube un archivo `.gcode` o `.gco` para iniciar el proceso de impresión 3D.</p>
+      </div>
+      <div class="feature-card">
+        <img src="{{ url_for('static', filename='img/pasos.jpeg') }}" alt="Paso 2" class="card-image">
+        <h3>2. Procesamos tu solicitud</h3>
+        <p>El sistema valida el archivo y programa la impresión en el brazo robótico IEEE RAS.</p>
+      </div>
+      <div class="feature-card">
+        <img src="{{ url_for('static', filename='img/robot.jpeg') }}" alt="Paso 3" class="card-image">
+        <h3>3. Ejecutamos la impresión</h3>
+        <p>La máquina imprime con precisión mientras monitoreamos calidad y avance en tiempo real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="container">
+    <h2>Beneficios del Portal IEEE RAS</h2>
+    <div class="benefit-grid">
+      <div class="benefit-card">
+        <h3>Acceso Académico</h3>
+        <p>Estudiantes y equipos de investigación usan una plataforma confiable y flexible.</p>
+      </div>
+      <div class="benefit-card">
+        <h3>Robótica Avanzada</h3>
+        <p>Integración con brazos robóticos para mejorar la capacidad de impresión y automatización.</p>
+      </div>
+      <div class="benefit-card">
+        <h3>Diseño Colaborativo</h3>
+        <p>El portal facilita la gestión de archivos y la comunicación entre desarrolladores y operadores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="database-files" style="padding: 60px 0; background-color: #f8f9fa;">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+      <h2 style="margin: 0;">Mis Archivos ({{ user.username }})</h2>
+      <div style="background-color: #002855; color: white; padding: 10px 20px; border-radius: 25px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        🪙 Créditos Disponibles: {{ user.credits }} cm³
+      </div>
+    </div>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid #dee2e6; color: #002855;">
+            <th style="padding: 12px;">Nombre del Archivo</th>
+            <th style="padding: 12px;">Fecha de Carga</th>
+            <th style="padding: 12px; text-align: center;">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for archivo in archivos %}
+          <tr style="border-bottom: 1px solid #dee2e6;">
+            <td style="padding: 12px; font-weight: 500;">{{ archivo.filename }}</td>
+            <td style="padding: 12px; color: #6c757d;">{{ archivo.uploaded_at.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td style="padding: 12px; text-align: center;">
+              <form action="{{ url_for('delete_file', file_id=archivo.id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo de la cola?');" style="display:inline;">
+                <button type="submit" class="btn" style="background-color: #dc3545; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3" style="padding: 20px; text-align: center; color: #6c757d;">
+              No tienes archivos cargados en el portal actualmente.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="container">
+    <h2>Galería rápida</h2>
+    <div class="gallery-grid">
+      <img src="{{ url_for('static', filename='img/printer.jpg') }}" alt="Impresora en acción">
+      <img src="{{ url_for('static', filename='img/robot.jpeg') }}" alt="Brazo robótico">
+      <img src="{{ url_for('static', filename='img/step.jpg') }}" alt="Step">
+      <img src="{{ url_for('static', filename='img/pasos.jpeg') }}" alt="Pasos de trabajo">
+    </div>
+  </div>
+</section>
+{% endblock %}
